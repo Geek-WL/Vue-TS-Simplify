@@ -1,37 +1,42 @@
 <template>
   <div class="login-container">
-    <div class="login-box">
-      <h2>欢迎登录</h2>
-      <el-form ref="form" :model="loginData" :rules="loginRules" label-width="0px">
-        <el-form-item label="" prop="username">
-          <el-input v-model="loginData.username" prefix-icon="el-icon-user"></el-input>
-        </el-form-item>
-        <el-form-item label="" prop="password">
-          <el-input type="password" v-model="loginData.password" prefix-icon="el-icon-lock"></el-input>
-        </el-form-item>
-        <el-form-item label="" prop="captcha">
-          <el-row>
-            <el-col :span="16">
-              <el-input v-model="loginData.captcha" prefix-icon="el-icon-lock"></el-input>
-            </el-col>
-            <el-col :span="8">
-              <img src="http://127.0.0.1:7001/imageCaptcha" ref="captchaImage" alt="" @click="updateCaptcha">
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit" style="width: 100%">登录</el-button>
-        </el-form-item>
-      </el-form>
-      <ul>
-        <li class="iconfont icon-qq" style="color: dodgerblue"></li>
-        <li class="iconfont icon-weixin" style="color: greenyellow"></li>
-        <li class="iconfont icon-weibo" style="color: red"></li>
-        <li class="iconfont icon-github" style="color: black">
-          <a href="http://127.0.0.1:7001/passport/github"></a>
-        </li>
-      </ul>
-    </div>
+    <vue-particle-line>
+      <div class="login-box">
+        <h2>Admin-Login</h2>
+        <p>Vue+TypeScript联合实践</p>
+        <el-form ref="form" :model="loginData" :rules="loginRules" label-width="0px">
+          <el-form-item label="" prop="username">
+            <el-input v-model="loginData.username" prefix-icon="el-icon-user"></el-input>
+          </el-form-item>
+          <el-form-item label="" prop="password">
+            <el-input type="password" v-model="loginData.password" prefix-icon="el-icon-lock"></el-input>
+          </el-form-item>
+          <el-form-item label="" prop="captcha">
+            <el-row>
+              <el-col :span="13">
+                <el-input v-model="loginData.captcha" prefix-icon="el-icon-lock"></el-input>
+              </el-col>
+              <el-col :span="11">
+                <img src="http://127.0.0.1:7001/imageCaptcha" ref="captchaImage" alt="" @click="updateCaptcha">
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit" style="width: 100px; background:transparent; color: #409EFF" icon="el-icon-s-promotion">登录</el-button>
+          </el-form-item>
+        </el-form>
+        <p>没有账号,去<span style="color: deepskyblue;cursor: pointer" @click="toRegister">注册</span> or ↓</p>
+        <p>------------- 第三方登录 -------------  </p>
+        <ul>
+          <!--        <li class="iconfont icon-qq" style="color: dodgerblue"></li>-->
+          <!--        <li class="iconfont icon-weixin" style="color: greenyellow"></li>-->
+          <!--        <li class="iconfont icon-weibo" style="color: red"></li>-->
+          <li class="iconfont icon-github" style="color: #fff">
+            <a href="http://127.0.0.1:7001/passport/github"></a>
+          </li>
+        </ul>
+      </div>
+    </vue-particle-line>
   </div>
 </template>
 
@@ -139,6 +144,9 @@ export default class Login extends Vue{
       }
     })
   }
+  private toRegister() {
+    this.$router.push('/register');
+  }
 }
 </script>
 
@@ -146,23 +154,33 @@ export default class Login extends Vue{
   .login-container {
     width: 100%;
     height: 100%;
-    background: url("../assets/bg.jpg") no-repeat;
+    /*background: url("../assets/bg.jpg") no-repeat;*/
+    background-color: #000;
     background-size: 100% 100%;
     .login-box {
       width: 400px;
-      height: 375px;
+      height: 465px;
       border-radius: 10px;
       /*background: rgba(255,255,255,.8);*/
-      background: #fff;
+      background: transparent;
       position: absolute;
       left: 0;
       top: 0;
       right: 0;
       bottom: 0;
       margin: auto;
-      padding: 0 20px;
+      padding: 0 60px;
       box-sizing: border-box;
+      z-index: 666;
       /*opacity: 0.8;*/
+      h2 {
+        font-weight: bold;
+        color: #efefef;
+      }
+      p {
+        text-align: center;
+        color: #d1d1d1;
+      }
       ul {
         display: flex;
         justify-content: space-around;
@@ -183,6 +201,7 @@ export default class Login extends Vue{
       }
       .el-form {
         margin: 0 auto;
+        text-align: center;
         .el-form-item {
           height: 40px;
           .el-button {

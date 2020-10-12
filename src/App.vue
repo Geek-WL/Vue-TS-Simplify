@@ -24,4 +24,12 @@ export default class App extends Vue{
   width: 100%;
   height: 100%;
 }
+  .el-input__inner {
+    background: transparent !important;
+    color: #fff !important;
+    border: 1px solid #409EFF !important;
+  }
+  .el-form-item__error {
+    color: #409EFF !important;
+  }
 </style>
