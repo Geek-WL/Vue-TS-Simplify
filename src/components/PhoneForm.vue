@@ -8,16 +8,17 @@
     </el-form-item>
     <el-form-item label="" prop="captcha">
       <el-row>
-        <el-col :span="18">
+        <el-col :span="14">
           <el-input v-model="registerData.captcha" prefix-icon="el-icon-lock"></el-input>
         </el-col>
-        <el-col :span="6">
-           <el-button @click="getPhoneCaptcha" type="primary">获取验证码</el-button>
+        <el-col :span="10">
+           <el-button @click="getPhoneCaptcha" type="primary" style="background:transparent; color: #409EFF">获取验证码</el-button>
         </el-col>
       </el-row>
     </el-form-item>
 <!--    <el-form-item>-->
-      <el-button type="primary" @click="onSubmit" style="width: 100%">注册</el-button>
+      <el-button type="primary" @click="onSubmit" style="width: 100px;background:transparent; color: #409EFF">注册</el-button>
+    <span style="color: #0078ff;margin-left:20px">已有账号,去→<a href="javascript:;" @click.prevent="toLogin">登录</a></span>
 <!--    </el-form-item>-->
     <el-form-item prop="checked">
       <el-checkbox v-model="registerData.checked">
@@ -36,6 +37,9 @@
   name: 'PhoneForm'
 })
 export default class PhoneForm extends Vue{
+    private toLogin() {
+      this.$router.push('/login')
+    }
   private registerData = {
     phone: '',
     password: '',
@@ -126,17 +130,21 @@ export default class PhoneForm extends Vue{
   }
 
   private getPhoneCaptcha() {
-    sendPhoneCaptcha({phone: this.registerData.phone})
-    .then((res: any) => {
-      if(res.status === 200) {
-        (this as any).$message.success(res.data.msg)
-      }else{
-        (this as any).$message.error(res.data.msg)
-      }
-    })
-    .catch(err => {
-      (this as any).$message.error(err.response.data.msg);
-    })
+    if(this.registerData.phone) {
+      sendPhoneCaptcha({phone: this.registerData.phone})
+        .then((res: any) => {
+          if(res.status === 200) {
+            (this as any).$message.success(res.data.msg)
+          }else{
+            (this as any).$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          (this as any).$message.error(err.response.data.msg);
+        })
+    }else{
+      (this as any).$message.error('请输出正确的手机号')
+    }
   }
 }
 </script>
@@ -150,5 +158,12 @@ export default class PhoneForm extends Vue{
   }
   .el-checkbox {
     margin-top: 10px;
+  }
+  p {
+    width: 250px;
+    white-space: normal;
+  }
+  a {
+    color: #409EFF;
   }
 </style>

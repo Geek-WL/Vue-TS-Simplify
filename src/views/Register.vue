@@ -1,7 +1,9 @@
 <template>
   <div class="register-container">
+    <vue-particle-line>
     <div class="register-box">
-      <h2>江伟龙后台管理系统前端注册</h2>
+      <h2>Admin-Register</h2>
+      <p>极简科幻透明--Design By Dlmwnr.</p>
       <el-tabs tab-position="left" style="height: 300px;" @tab-click="handleClick">
         <el-tab-pane label="用户名注册">
           <NormalForm ref="normalForm"/>
@@ -14,6 +16,7 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+    </vue-particle-line>
   </div>
 </template>
 
@@ -47,26 +50,34 @@ export default class Register extends Vue{
 .register-container {
   width: 100%;
   height: 100%;
-  background: url("../assets/bg.jpg") no-repeat;
-  background-size: 100% 100%;
+  /*background: url("../assets/bg.jpg") no-repeat;*/
+  /*background-size: 100% 100%;*/
+  background: #000;
   .register-box {
-    width: 580px;
-    height: 385px;
+    width: 450px;
+    height: 400px;
     border-radius: 10px;
     /*background: rgba(255,255,255,.8);*/
-    background: #fff;
+    /*background: #fff;*/
+    background: transparent;
     position: absolute;
     left: 0;
-    top: 0;
+    top: -100px;
     right: 0;
     bottom: 0;
     margin: auto;
+    z-index: 666;
     padding: 0 20px;
     box-sizing: border-box;
     /*opacity: 0.8;*/
     }
     h2 {
+      color: #efefef;
       text-align: center;
+    }
+    p {
+      text-align: center;
+      color: #d1d1d1;
     }
   }
 </style>

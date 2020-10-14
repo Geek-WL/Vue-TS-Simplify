@@ -8,20 +8,21 @@
     </el-form-item>
     <el-form-item label="" prop="captcha">
       <el-row>
-        <el-col :span="18">
+        <el-col :span="14">
           <el-input v-model="registerData.captcha" prefix-icon="el-icon-lock"></el-input>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="10">
           <img src="http://127.0.0.1:7001/imageCaptcha" ref="captchaImage" alt="" @click="updateCaptcha">
         </el-col>
       </el-row>
     </el-form-item>
 <!--    <el-form-item>-->
-      <el-button type="primary" @click="onSubmit" style="width: 100%">注册</el-button>
+      <el-button type="primary" @click="onSubmit" style="width: 100px;background:transparent; color: #409EFF">注册</el-button>
 <!--    </el-form-item>-->
+    <span style="color: #0078ff;margin-left:20px">已有账号,去→<a href="javascript:;" @click.prevent="toLogin">登录</a></span>
     <el-form-item prop="checked">
       <el-checkbox v-model="registerData.checked">
-        <p>阅读并接受 <a href="#">《管理系统用户协议》</a>及<a href="#">《系统隐私权保护声明》</a></p>
+        <p>阅读并接受<a href="javascript:;">《管理系统用户协议》</a>及<a href="javascript:;">《系统隐私权保护声明》</a></p>
       </el-checkbox>
     </el-form-item>
   </el-form>
@@ -133,6 +134,10 @@ export default class NormalForm extends Vue{
   public resetForm() {
     this.form.resetFields();
   }
+
+  private toLogin() {
+    this.$router.push('/login');
+  }
 }
 </script>
 
@@ -146,4 +151,11 @@ export default class NormalForm extends Vue{
     height: 40px;
   }
 }
+  p {
+    width: 250px;
+    white-space: normal;
+  }
+  a {
+    color: #409EFF;
+  }
 </style>

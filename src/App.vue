@@ -26,7 +26,7 @@ export default class App extends Vue{
 }
   .el-input__inner {
     background: transparent !important;
-    color: #fff !important;
+    color: #d1d1d1 !important;
     border: 1px solid #409EFF !important;
   }
   .el-form-item__error {
