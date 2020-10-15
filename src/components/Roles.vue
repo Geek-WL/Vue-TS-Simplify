@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="roles">
     <!--面包屑导航-->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item><a href="/admin" @click="resetDefaultActivePath">首页</a></el-breadcrumb-item>
@@ -420,6 +420,11 @@
 </script>
 
 <style lang="scss" scoped>
+  .roles {
+    background: #f2f6fc;
+    padding: 20px 10px;
+    min-width: 1000px;
+  }
   .el-breadcrumb{
     padding-bottom: 20px;
   }

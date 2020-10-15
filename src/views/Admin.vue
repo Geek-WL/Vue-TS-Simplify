@@ -1,11 +1,28 @@
 <template>
   <el-container>
     <el-header>
-      <div class="header-left" @click="toggleCollapse"></div>
+      <div class="header-left" @click="toggleCollapse">
+        <p>Dlmwnr's Design</p>
+      </div>
       <div class="header-right">
-        <img :src="userInfo.baseURL+userInfo.avatarURL" alt="">
-        <p>{{userInfo.username || userInfo.email || userInfo.phone}}</p>
-        <el-button @click="logout">退出</el-button>
+        <el-menu class="el-menu-demo" mode="horizontal" active-text-color="#ffd04b" background-color="#545c64" text-color="#fff">
+          <el-menu-item index="1"><i class="el-icon-bell"></i></el-menu-item>
+          <el-menu-item index="2"><i class="el-icon-magic-stick"></i></el-menu-item>
+          <el-menu-item index="3" @click="change_full_screen"><i class="el-icon-full-screen"></i></el-menu-item>
+          <el-submenu index="4" style="width: 161px">
+            <template slot="title">
+              <div class="userInfo">
+                <p>{{userInfo.username || userInfo.email || userInfo.phone}}</p>
+                <img :src="userInfo.baseURL+userInfo.avatarURL" alt="">
+                <i class="el-submenu__icon-arrow el-icon-arrow-down"></i>
+              </div>
+            </template>
+            <el-menu-item index="4-1">个人中心</el-menu-item>
+            <el-menu-item index="4-2">修改密码</el-menu-item>
+            <el-menu-item index="4-3" @click="logout">退出</el-menu-item>
+          </el-submenu>
+          <el-menu-item index="5"><i class="el-icon-setting"></i></el-menu-item>
+        </el-menu>
       </div>
     </el-header>
     <el-container>
@@ -15,7 +32,7 @@
           default-active="2"
           class="el-menu-vertical-demo"
           background-color="#000"
-          text-color="#fff"
+          text-color="#D0D0D0"
           active-text-color="deepskyblue"
           :collapse="isCollapse"
           :collapse-transition="false"
@@ -23,7 +40,7 @@
           :default-active="defaultActivePath">
           <!--一级菜单-->
           <!--注意点: index绑定的值应为字符串，而后端返回的可能是null，因此需要做特殊处理-->
-          <el-submenu :index="item.rightsPath || ''" v-for="(item, index) in currentMenus" :key="item.id">
+          <el-submenu style="width: 200px" :index="item.rightsPath || ''" v-for="(item, index) in currentMenus" :key="item.id">
             <template slot="title">
               <i :class="getIcon(item.rightsName)"></i>
               <span>{{item.rightsName}}</span>
@@ -43,14 +60,14 @@
           default-active="2"
           class="el-menu-vertical-demo"
           background-color="#000"
-          text-color="#fff"
+          text-color="#D0D0D0"
           active-text-color="deepskyblue"
           :collapse="isCollapse"
           :collapse-transition="false"
           :router="true"
           :default-active="defaultActivePath">
           <!--一级菜单-->
-          <el-submenu :index="item.path" v-for="item in menus" :key="item.menuName">
+          <el-submenu style="width: 200px" :index="item.path" v-for="item in menus" :key="item.menuName">
             <template slot="title">
               <i :class="item.icon"></i>
               <span>{{item.menuName}}</span>
@@ -81,6 +98,36 @@
     name: 'Admin'
   })
   export default class Admin extends Vue {
+    private fullscreen = false;
+    private change_full_screen() {
+      //全屏切换函数
+      let element = document.documentElement;
+      if (this.fullscreen) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      } else {
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+          // IE11
+          element.msRequestFullscreen();
+        }
+      }
+      this.fullscreen = !this.fullscreen; //判断全屏状态
+    }
+
+
     private defaultActivePath = '';
     private menus = [
       {
@@ -193,32 +240,51 @@
       justify-content: space-between;
       align-items: center;
       overflow: hidden;
-      background: #144a83;
+      padding-right: 20px;
+      padding-left: 0;
+      background: #545c64;
 
       .header-left {
-        width: 160px;
-        height: 55px;
+        width: 200px;
+        /*height: 55px;*/
+        height: 100%;
         cursor: pointer;
-        background: url("../assets/bg.jpg") center center no-repeat;
-        background-size: 80% auto;
+        background: #000;
+        /*background: url("../assets/bg.jpg") center center no-repeat;*/
+        /*background-size: 80% auto;*/
+        p {
+          text-align: center;
+          font-weight: bold;
+          margin: 0;
+          font-size: 15px;
+          line-height: 60px;
+          color: #fff;
+        }
       }
 
       .header-right {
         display: flex;
         justify-content: space-between;
         align-items: center;
-
-        img {
-          width: 50px;
-          height: 50px;
-          object-fit: cover;
-          border-radius: 50%;
-          /*margin-left: 10px;*/
+        i {
+          color: #fff;
         }
+        .userInfo {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            /*margin-left: 10px;*/
+          }
 
-        p {
-          padding-left: 10px;
-          padding-right: 20px;
+          p {
+            margin: 0;
+            padding-right: 10px;
+          }
         }
       }
     }

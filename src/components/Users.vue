@@ -1,6 +1,6 @@
 <template>
-  <!--  separator : 面包屑的分隔符-->
-  <div>
+  <div class="users">
+    <!--  separator : 面包屑的分隔符-->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item><a href="/admin" @click="resetDefaultActivePath">首页</a></el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
@@ -44,7 +44,7 @@
         <el-col :span="6">
           <el-button type="primary" @click="showAddUserDialog" size="small">添加用户</el-button>
           <el-upload
-            style="display: inline-block;margin-left: 20px;margin-right: 20px"
+            style="display: inline-block;margin-left: 10px;margin-right: 10px"
             class="upload-demo"
             action="http://127.0.0.1:7001/api/v1/importUser"
             :show-file-list="false"
@@ -610,6 +610,12 @@ export default class Users extends Vue{
 </script>
 
 <style lang="scss" scoped>
+
+  .users {
+    background: #f2f6fc;
+    padding: 20px 10px;
+    min-width: 1225px;
+  }
   .el-breadcrumb {
     padding-bottom: 20px;
   }
