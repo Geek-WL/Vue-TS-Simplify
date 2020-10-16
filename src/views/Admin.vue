@@ -5,7 +5,8 @@
         <p>Dlmwnr's Design</p>
       </div>
       <div class="header-right">
-        <el-menu class="el-menu-demo" mode="horizontal" active-text-color="#ffd04b" background-color="#545c64" text-color="#fff">
+        <el-menu class="el-menu-demo" mode="horizontal" active-text-color="#ffd04b" background-color="#545c64"
+                 text-color="#fff">
           <el-menu-item index="1"><i class="el-icon-bell"></i></el-menu-item>
           <el-menu-item index="2"><i class="el-icon-magic-stick"></i></el-menu-item>
           <el-menu-item index="3" @click="change_full_screen"><i class="el-icon-full-screen"></i></el-menu-item>
@@ -32,15 +33,23 @@
           default-active="2"
           class="el-menu-vertical-demo"
           background-color="#000"
-          text-color="#D0D0D0"
+          text-color="#E1E1E1"
           active-text-color="deepskyblue"
           :collapse="isCollapse"
           :collapse-transition="false"
           :router="true"
+          :unique-opened="true"
           :default-active="defaultActivePath">
+          <el-menu-item index="/welcome" style="width: 200px;" @click="changeDefaultActivePath('/welcome')">
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>主页</span>
+            </template>
+          </el-menu-item>
           <!--一级菜单-->
           <!--注意点: index绑定的值应为字符串，而后端返回的可能是null，因此需要做特殊处理-->
-          <el-submenu style="width: 200px" :index="item.rightsPath || ''" v-for="(item, index) in currentMenus" :key="item.id">
+          <el-submenu style="width: 200px" :index="item.rightsPath || ''" v-for="(item, index) in currentMenus"
+                      :key="item.id">
             <template slot="title">
               <i :class="getIcon(item.rightsName)"></i>
               <span>{{item.rightsName}}</span>
@@ -60,11 +69,12 @@
           default-active="2"
           class="el-menu-vertical-demo"
           background-color="#000"
-          text-color="#D0D0D0"
+          text-color="#E1E1E1"
           active-text-color="deepskyblue"
           :collapse="isCollapse"
           :collapse-transition="false"
           :router="true"
+          :unique-opened="true"
           :default-active="defaultActivePath">
           <!--一级菜单-->
           <el-submenu style="width: 200px" :index="item.path" v-for="item in menus" :key="item.menuName">
@@ -99,29 +109,30 @@
   })
   export default class Admin extends Vue {
     private fullscreen = false;
+
     private change_full_screen() {
       //全屏切换函数
-      let element = document.documentElement;
+      let element: any = document.documentElement;
       if (this.fullscreen) {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitCancelFullScreen) {
-          document.webkitCancelFullScreen();
-        } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
+        if ((document as any).exitFullscreen) {
+          (document as any).exitFullscreen();
+        } else if ((document as any).webkitCancelFullScreen) {
+          (document as any).webkitCancelFullScreen();
+        } else if ((document as any).mozCancelFullScreen) {
+          (document as any).mozCancelFullScreen();
+        } else if ((document as any).msExitFullscreen) {
+          (document as any).msExitFullscreen();
         }
       } else {
-        if (element.requestFullscreen) {
-          element.requestFullscreen();
-        } else if (element.webkitRequestFullScreen) {
-          element.webkitRequestFullScreen();
-        } else if (element.mozRequestFullScreen) {
-          element.mozRequestFullScreen();
-        } else if (element.msRequestFullscreen) {
+        if ((element as any).requestFullscreen) {
+          (element as any).requestFullscreen();
+        } else if ((element as any).webkitRequestFullScreen) {
+          (element as any).webkitRequestFullScreen();
+        } else if ((element as any).mozRequestFullScreen) {
+          (element as any).mozRequestFullScreen();
+        } else if ((element as any).msRequestFullscreen) {
           // IE11
-          element.msRequestFullscreen();
+          (element as any).msRequestFullscreen();
         }
       }
       this.fullscreen = !this.fullscreen; //判断全屏状态
@@ -131,15 +142,41 @@
     private defaultActivePath = '';
     private menus = [
       {
-        menuName: '错误页面',
-        path: '',
-        icon: 'el-icon-document-delete',
+        menuName: '常用页面',
+        path: 'commonPage',
+        icon: 'el-icon-monitor',
         children: [
-          {menuName: '401', path: '/error401', icon: 'el-icon-folder-remove', children: []},
-          {menuName: '404', path: '/error404', icon: 'el-icon-s-flag', children: []},
-          {menuName: '500', path: '/error500', icon: 'el-icon-s-release', children: []}
+          {menuName: '登录', path: '/login', icon: 'el-icon-s-promotion', children: []},
+          {menuName: '注册', path: '/register', icon: 'el-icon-thumb', children: []},
+          {menuName: '401无权限访问', path: '/error401', icon: 'el-icon-folder-remove', children: []},
+          {menuName: '404页面不存在', path: '/error404', icon: 'el-icon-s-flag', children: []},
+          {menuName: '500服务端错误', path: '/error500', icon: 'el-icon-s-release', children: []}
         ]
       },
+      {
+        menuName: 'Echarts图表',
+        path: 'echarts',
+        icon: 'el-icon-pie-chart',
+        children: [
+          {menuName: '柱状图', path: '/echartsbar', icon: 'el-icon-folder-remove', children: []},
+          {menuName: '折线图', path: '/echartsline', icon: 'el-icon-s-flag', children: []},
+          {menuName: '地图', path: '/echartsmap', icon: 'el-icon-s-release', children: []}]
+      },
+      // {
+      //   menuName: '错误页面',
+      //   path: 'errorPage',
+      //   icon: 'el-icon-document-delete',
+      //   children: [
+      //     {menuName: '401', path: '/error401', icon: 'el-icon-folder-remove', children: []},
+      //     {menuName: '404', path: '/error404', icon: 'el-icon-s-flag', children: []},
+      //     {menuName: '500', path: '/error500', icon: 'el-icon-s-release', children: []}
+      //   ]
+      // },
+      // {
+      //   menuName: '主页',
+      //   path: 'home',
+      //   icon: 'el-icon-document-delete',
+      // },
       // {
       //   menuName:'用户管理',
       //   path: '',
@@ -202,10 +239,11 @@
         item.rightsPath = `${i++}`
       });
     }
+
     private getIcon(rightsName: string) {
       switch (rightsName) {
         case '用户管理':
-          return 'el-icon-setting';
+          return 'el-icon-tickets';
           break;
         case '权限管理':
           return 'el-icon-collection';
@@ -266,13 +304,16 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         i {
           color: #fff;
         }
+
         .userInfo {
           display: flex;
           align-items: center;
           justify-content: space-between;
+
           img {
             width: 50px;
             height: 50px;
@@ -287,6 +328,10 @@
           }
         }
       }
+    }
+
+    .el-main {
+      padding: 20px 10px !important;
     }
 
     .el-aside {

@@ -22,9 +22,9 @@
 
 <script lang="ts">
   import {Vue, Component, Ref} from 'vue-property-decorator'
-import NormalForm from "@/components/NormalForm.vue";
-import EmailForm from "@/components/EmailForm.vue";
-import PhoneForm from "@/components/PhoneForm.vue";
+import NormalForm from "@/components/register-form/NormalForm.vue";
+import EmailForm from "@/components/register-form/EmailForm.vue";
+import PhoneForm from "@/components/register-form/PhoneForm.vue";
 
 @Component({
   name: 'Register',

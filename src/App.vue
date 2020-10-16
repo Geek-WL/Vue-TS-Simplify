@@ -19,14 +19,12 @@ export default class App extends Vue{
   html, body {
   width: 100%;
   height: 100%;
+    overflow: hidden;
 }
 #app {
   width: 100%;
   height: 100%;
 }
-  .el-main {
-    padding: 0 !important;
-  }
   .el-input__inner {
     background: transparent !important;
     color: #d1d1d1 !important;

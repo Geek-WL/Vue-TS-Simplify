@@ -12,6 +12,9 @@ import vueParticleLine from 'vue-particle-line'
 import 'vue-particle-line/dist/vue-particle-line.css'
 Vue.use(vueParticleLine);
 
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts;
+
 Vue.config.productionTip = false;
 
 new Vue({

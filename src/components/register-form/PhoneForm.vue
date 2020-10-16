@@ -1,7 +1,7 @@
 <template>
   <el-form ref="form" :model="registerData" :rules="registerRules" label-width="0px">
-    <el-form-item label="" prop="username">
-      <el-input v-model="registerData.username" prefix-icon="el-icon-user"></el-input>
+    <el-form-item label="" prop="phone">
+      <el-input v-model="registerData.phone" prefix-icon="el-icon-phone-outline"></el-input>
     </el-form-item>
     <el-form-item label="" prop="password">
       <el-input type="password" v-model="registerData.password" prefix-icon="el-icon-lock"></el-input>
@@ -12,17 +12,17 @@
           <el-input v-model="registerData.captcha" prefix-icon="el-icon-lock"></el-input>
         </el-col>
         <el-col :span="10">
-          <img src="http://127.0.0.1:7001/imageCaptcha" ref="captchaImage" alt="" @click="updateCaptcha">
+           <el-button @click="getPhoneCaptcha" type="primary" style="background:transparent; color: #409EFF">获取验证码</el-button>
         </el-col>
       </el-row>
     </el-form-item>
 <!--    <el-form-item>-->
       <el-button type="primary" @click="onSubmit" style="width: 100px;background:transparent; color: #409EFF">注册</el-button>
-<!--    </el-form-item>-->
     <span style="color: #0078ff;margin-left:20px">已有账号,去→<a href="javascript:;" @click.prevent="toLogin">登录</a></span>
+<!--    </el-form-item>-->
     <el-form-item prop="checked">
       <el-checkbox v-model="registerData.checked">
-        <p>阅读并接受<a href="javascript:;">《管理系统用户协议》</a>及<a href="javascript:;">《系统隐私权保护声明》</a></p>
+        <p>阅读并接受 <a href="#">《管理系统用户协议》</a>及<a href="#">《系统隐私权保护声明》</a></p>
       </el-checkbox>
     </el-form-item>
   </el-form>
@@ -31,22 +31,25 @@
 <script lang="ts">
   import {Vue, Component, Ref} from 'vue-property-decorator'
   import {ElForm} from "element-ui/types/form"; // 用于给Ref声明类型
-  import {loginUser, registerUser} from '../api/index'
+  import {registerUser, sendPhoneCaptcha} from '../../api'
 
 @Component({
-  name: 'NormalForm'
+  name: 'PhoneForm'
 })
-export default class NormalForm extends Vue{
+export default class PhoneForm extends Vue{
+    private toLogin() {
+      this.$router.push('/login')
+    }
   private registerData = {
-    username: '',
+    phone: '',
     password: '',
     captcha: '',
-    type: 'normal',
+    type: 'phone',
     checked: true,
   };
   private registerRules = {
-    username: [
-      { validator: this.validateUsername, trigger: 'blur' }
+    phone: [
+      { validator: this.validatePhone, trigger: 'blur' }
     ],
     password: [
       { validator: this.validatePassword, trigger: 'blur' }
@@ -58,15 +61,13 @@ export default class NormalForm extends Vue{
       { validator: this.validateChecked, trigger: 'change' }
     ]
   };
-  private validateUsername(rule: any, value: string, callback: any) {
+  private validatePhone(rule: any, value: string, callback: any) {
     // rule 规则  value 需要校验的数据 callback 判断成功或失败
-    const reg = /^[a-zA-Z][a-zA-Z0-9_]{8,20}$/;
+    const reg = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-7|9])|(?:5[0-3|5-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1|8|9]))\d{8}$/;
     if(!value) {
-      callback(new Error('用户名不能为空'));
-    }else if(value.length < 8 || value.length > 20) {
-      callback(new Error('用户名至少8位,至多20位'));
+      callback(new Error('请输入手机号码'));
     }else if(!reg.test(value)){
-      callback(new Error('以英文字母开头,只能包含英文字母/数字/下划线'));
+      callback(new Error('手机号码格式不正确'));
     } else {
       callback();
     }
@@ -103,11 +104,6 @@ export default class NormalForm extends Vue{
     }
   };
 
-  @Ref() readonly captchaImage!: HTMLImageElement;
-  private updateCaptcha() {
-    this.captchaImage.src = `http://127.0.0.1:7001/imageCaptcha?r=${Math.random()}`
-  }
-
   @Ref() readonly form!: ElForm;
   private onSubmit() {
     this.form.validate((valid) => {
@@ -118,13 +114,11 @@ export default class NormalForm extends Vue{
             (this as any).$message.success('注册成功');
             this.$router.push('/login');
           }else{
-            (this as any).$message.error(res.data.msg);// 这种情况是 用户已存在
-            this.updateCaptcha();
+            (this as any).$message.error(res.data.msg);
           }
         })
         .catch((err: any) => {
           (this as any).$message.error(err.response.data.msg);
-          this.updateCaptcha();
         })
       } else {
         (this as any).$message.error('请完善注册信息');
@@ -135,22 +129,36 @@ export default class NormalForm extends Vue{
     this.form.resetFields();
   }
 
-  private toLogin() {
-    this.$router.push('/login');
+  private getPhoneCaptcha() {
+    if(this.registerData.phone) {
+      sendPhoneCaptcha({phone: this.registerData.phone})
+        .then((res: any) => {
+          if(res.status === 200) {
+            (this as any).$message.success(res.data.msg)
+          }else{
+            (this as any).$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          (this as any).$message.error(err.response.data.msg);
+        })
+    }else{
+      (this as any).$message.error('请输出正确的手机号')
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .el-button {
-    margin-bottom: 5px;
-  }
-.el-row {
-  height: 40px;
-  .el-col {
+  .el-row {
     height: 40px;
+    .el-col {
+      height: 40px;
+    }
   }
-}
+  .el-checkbox {
+    margin-top: 10px;
+  }
   p {
     width: 250px;
     white-space: normal;

@@ -1,7 +1,7 @@
 <template>
   <el-form ref="form" :model="registerData" :rules="registerRules" label-width="0px">
-    <el-form-item label="" prop="phone">
-      <el-input v-model="registerData.phone" prefix-icon="el-icon-phone-outline"></el-input>
+    <el-form-item label="" prop="email">
+      <el-input v-model="registerData.email" prefix-icon="el-icon-message"></el-input>
     </el-form-item>
     <el-form-item label="" prop="password">
       <el-input type="password" v-model="registerData.password" prefix-icon="el-icon-lock"></el-input>
@@ -12,7 +12,7 @@
           <el-input v-model="registerData.captcha" prefix-icon="el-icon-lock"></el-input>
         </el-col>
         <el-col :span="10">
-           <el-button @click="getPhoneCaptcha" type="primary" style="background:transparent; color: #409EFF">获取验证码</el-button>
+           <el-button @click="getEmailCaptcha" type="primary" style="background:transparent; color: #409EFF">获取验证码</el-button>
         </el-col>
       </el-row>
     </el-form-item>
@@ -31,25 +31,25 @@
 <script lang="ts">
   import {Vue, Component, Ref} from 'vue-property-decorator'
   import {ElForm} from "element-ui/types/form"; // 用于给Ref声明类型
-  import {registerUser, sendPhoneCaptcha} from '../api/index'
+  import {registerUser, sendEmailCaptcha} from '../../api'
 
 @Component({
-  name: 'PhoneForm'
+  name: 'EmailForm'
 })
-export default class PhoneForm extends Vue{
-    private toLogin() {
+export default class EmailForm extends Vue{
+    private toLogi() {
       this.$router.push('/login')
     }
   private registerData = {
-    phone: '',
+    email: '',
     password: '',
     captcha: '',
-    type: 'phone',
+    type: 'email',
     checked: true,
   };
   private registerRules = {
-    phone: [
-      { validator: this.validatePhone, trigger: 'blur' }
+    email: [
+      { validator: this.validateEmail, trigger: 'blur' }
     ],
     password: [
       { validator: this.validatePassword, trigger: 'blur' }
@@ -61,13 +61,13 @@ export default class PhoneForm extends Vue{
       { validator: this.validateChecked, trigger: 'change' }
     ]
   };
-  private validatePhone(rule: any, value: string, callback: any) {
+  private validateEmail(rule: any, value: string, callback: any) {
     // rule 规则  value 需要校验的数据 callback 判断成功或失败
-    const reg = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-7|9])|(?:5[0-3|5-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1|8|9]))\d{8}$/;
+    const reg = /^([A-Za-z0-9_\-\.])+\@(163.com|qq.com)$/; // 此正则仅匹配qq和网易邮箱
     if(!value) {
-      callback(new Error('请输入手机号码'));
+      callback(new Error('邮箱不能为空'));
     }else if(!reg.test(value)){
-      callback(new Error('手机号码格式不正确'));
+      callback(new Error('现仅支持qq和网易邮箱'));
     } else {
       callback();
     }
@@ -129,9 +129,9 @@ export default class PhoneForm extends Vue{
     this.form.resetFields();
   }
 
-  private getPhoneCaptcha() {
-    if(this.registerData.phone) {
-      sendPhoneCaptcha({phone: this.registerData.phone})
+  private getEmailCaptcha() {
+    if(this.registerData.email) {
+      sendEmailCaptcha({email: this.registerData.email})
         .then((res: any) => {
           if(res.status === 200) {
             (this as any).$message.success(res.data.msg)
@@ -142,8 +142,8 @@ export default class PhoneForm extends Vue{
         .catch(err => {
           (this as any).$message.error(err.response.data.msg);
         })
-    }else{
-      (this as any).$message.error('请输出正确的手机号')
+    } else {
+      (this as any).$message.error('请输出正确的邮箱')
     }
   }
 }

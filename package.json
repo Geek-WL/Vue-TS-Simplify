@@ -7,12 +7,14 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@types/echarts": "^4.8.1",
     "@types/file-saver": "^2.0.1",
     "@types/js-cookie": "^2.2.6",
     "@types/xlsx": "0.0.36",
     "animate.css": "^4.1.1",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
+    "echarts": "^4.9.0",
     "element-ui": "^2.4.5",
     "file-saver": "^2.0.2",
     "js-cookie": "^2.2.1",

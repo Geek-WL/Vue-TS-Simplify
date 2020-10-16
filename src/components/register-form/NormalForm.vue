@@ -1,7 +1,7 @@
 <template>
   <el-form ref="form" :model="registerData" :rules="registerRules" label-width="0px">
-    <el-form-item label="" prop="email">
-      <el-input v-model="registerData.email" prefix-icon="el-icon-message"></el-input>
+    <el-form-item label="" prop="username">
+      <el-input v-model="registerData.username" prefix-icon="el-icon-user"></el-input>
     </el-form-item>
     <el-form-item label="" prop="password">
       <el-input type="password" v-model="registerData.password" prefix-icon="el-icon-lock"></el-input>
@@ -12,17 +12,17 @@
           <el-input v-model="registerData.captcha" prefix-icon="el-icon-lock"></el-input>
         </el-col>
         <el-col :span="10">
-           <el-button @click="getEmailCaptcha" type="primary" style="background:transparent; color: #409EFF">获取验证码</el-button>
+          <img src="http://127.0.0.1:7001/imageCaptcha" ref="captchaImage" alt="" @click="updateCaptcha">
         </el-col>
       </el-row>
     </el-form-item>
 <!--    <el-form-item>-->
       <el-button type="primary" @click="onSubmit" style="width: 100px;background:transparent; color: #409EFF">注册</el-button>
-    <span style="color: #0078ff;margin-left:20px">已有账号,去→<a href="javascript:;" @click.prevent="toLogin">登录</a></span>
 <!--    </el-form-item>-->
+    <span style="color: #0078ff;margin-left:20px">已有账号,去→<a href="javascript:;" @click.prevent="toLogin">登录</a></span>
     <el-form-item prop="checked">
       <el-checkbox v-model="registerData.checked">
-        <p>阅读并接受 <a href="#">《管理系统用户协议》</a>及<a href="#">《系统隐私权保护声明》</a></p>
+        <p>阅读并接受<a href="javascript:;">《管理系统用户协议》</a>及<a href="javascript:;">《系统隐私权保护声明》</a></p>
       </el-checkbox>
     </el-form-item>
   </el-form>
@@ -31,25 +31,22 @@
 <script lang="ts">
   import {Vue, Component, Ref} from 'vue-property-decorator'
   import {ElForm} from "element-ui/types/form"; // 用于给Ref声明类型
-  import {registerUser, sendEmailCaptcha} from '../api/index'
+  import {loginUser, registerUser} from '../../api'
 
 @Component({
-  name: 'EmailForm'
+  name: 'NormalForm'
 })
-export default class EmailForm extends Vue{
-    private toLogi() {
-      this.$router.push('/login')
-    }
+export default class NormalForm extends Vue{
   private registerData = {
-    email: '',
+    username: '',
     password: '',
     captcha: '',
-    type: 'email',
+    type: 'normal',
     checked: true,
   };
   private registerRules = {
-    email: [
-      { validator: this.validateEmail, trigger: 'blur' }
+    username: [
+      { validator: this.validateUsername, trigger: 'blur' }
     ],
     password: [
       { validator: this.validatePassword, trigger: 'blur' }
@@ -61,13 +58,15 @@ export default class EmailForm extends Vue{
       { validator: this.validateChecked, trigger: 'change' }
     ]
   };
-  private validateEmail(rule: any, value: string, callback: any) {
+  private validateUsername(rule: any, value: string, callback: any) {
     // rule 规则  value 需要校验的数据 callback 判断成功或失败
-    const reg = /^([A-Za-z0-9_\-\.])+\@(163.com|qq.com)$/; // 此正则仅匹配qq和网易邮箱
+    const reg = /^[a-zA-Z][a-zA-Z0-9_]{8,20}$/;
     if(!value) {
-      callback(new Error('邮箱不能为空'));
+      callback(new Error('用户名不能为空'));
+    }else if(value.length < 8 || value.length > 20) {
+      callback(new Error('用户名至少8位,至多20位'));
     }else if(!reg.test(value)){
-      callback(new Error('现仅支持qq和网易邮箱'));
+      callback(new Error('以英文字母开头,只能包含英文字母/数字/下划线'));
     } else {
       callback();
     }
@@ -104,6 +103,11 @@ export default class EmailForm extends Vue{
     }
   };
 
+  @Ref() readonly captchaImage!: HTMLImageElement;
+  private updateCaptcha() {
+    this.captchaImage.src = `http://127.0.0.1:7001/imageCaptcha?r=${Math.random()}`
+  }
+
   @Ref() readonly form!: ElForm;
   private onSubmit() {
     this.form.validate((valid) => {
@@ -114,11 +118,13 @@ export default class EmailForm extends Vue{
             (this as any).$message.success('注册成功');
             this.$router.push('/login');
           }else{
-            (this as any).$message.error(res.data.msg);
+            (this as any).$message.error(res.data.msg);// 这种情况是 用户已存在
+            this.updateCaptcha();
           }
         })
         .catch((err: any) => {
           (this as any).$message.error(err.response.data.msg);
+          this.updateCaptcha();
         })
       } else {
         (this as any).$message.error('请完善注册信息');
@@ -129,36 +135,22 @@ export default class EmailForm extends Vue{
     this.form.resetFields();
   }
 
-  private getEmailCaptcha() {
-    if(this.registerData.email) {
-      sendEmailCaptcha({email: this.registerData.email})
-        .then((res: any) => {
-          if(res.status === 200) {
-            (this as any).$message.success(res.data.msg)
-          }else{
-            (this as any).$message.error(res.data.msg)
-          }
-        })
-        .catch(err => {
-          (this as any).$message.error(err.response.data.msg);
-        })
-    } else {
-      (this as any).$message.error('请输出正确的邮箱')
-    }
+  private toLogin() {
+    this.$router.push('/login');
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .el-row {
+  .el-button {
+    margin-bottom: 5px;
+  }
+.el-row {
+  height: 40px;
+  .el-col {
     height: 40px;
-    .el-col {
-      height: 40px;
-    }
   }
-  .el-checkbox {
-    margin-top: 10px;
-  }
+}
   p {
     width: 250px;
     white-space: normal;

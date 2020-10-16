@@ -612,8 +612,6 @@ export default class Users extends Vue{
 <style lang="scss" scoped>
 
   .users {
-    background: #f2f6fc;
-    padding: 20px 10px;
     min-width: 1225px;
   }
   .el-breadcrumb {

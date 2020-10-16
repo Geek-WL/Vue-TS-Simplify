@@ -421,8 +421,6 @@
 
 <style lang="scss" scoped>
   .roles {
-    background: #f2f6fc;
-    padding: 20px 10px;
     min-width: 1000px;
   }
   .el-breadcrumb{
