@@ -37,7 +37,7 @@
   name: 'EmailForm'
 })
 export default class EmailForm extends Vue{
-    private toLogi() {
+    private toLogin() {
       this.$router.push('/login')
     }
   private registerData = {

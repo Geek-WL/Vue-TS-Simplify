@@ -14,6 +14,9 @@ import Error500 from "@/components/error-page/Error500.vue";
 import EchartsBarSpace from "@/components/echarts/EchartsBarSpace.vue"
 import EchartsLineSpace from "@/components/echarts/EchartsLineSpace.vue"
 import ChinaMapSpace from "@/components/echarts/ChinaMapSpace.vue"
+import WebDataSettings from "@/components/settings/WebDataSettings.vue"
+import UserSettings from "@/components/settings/UserSettings.vue"
+import PasswordSetting from "@/components/settings/PasswordSetting.vue"
 import Cookies from "js-cookie";
 
 Vue.use(VueRouter);
@@ -50,6 +53,9 @@ const routes: Array<RouteConfig> = [
       {path: '/echartsbar', component: EchartsBarSpace},
       {path: '/echartsline', component: EchartsLineSpace},
       {path: '/echartsmap', component: ChinaMapSpace},
+      {path: '/settingweb', component: WebDataSettings},
+      {path: '/settinguser', component: UserSettings},
+      {path: '/settingpassword', component: PasswordSetting},
     ]
   },
 ];
@@ -63,7 +69,7 @@ const router = new VueRouter({
 // 路由控制
 router.beforeEach((to, form, next) => {
   // 如果是访问非权限页面 放行
-  if(to.path === '/register' || to.path === '/login' || to.path === '/error401' || to.path === '/error404' || to.path === '/error500' || to.path === '/echartsbar' || to.path === '/echartsline' || to.path === '/echartsmap') {
+  if(to.path === '/register' || to.path === '/login' || to.path === '/error401' || to.path === '/error404' || to.path === '/error500' || to.path === '/echartsbar' || to.path === '/echartsline' || to.path === '/echartsmap' || to.path === '/settingweb' || to.path === '/settinguser' || to.path === '/settingpassword') {
     return next();
   }
   // 判断登录状态，没有token就跳转至登录页
@@ -77,7 +83,7 @@ router.beforeEach((to, form, next) => {
   if(flag) {
     next()
   } else {
-    next(false);
+    next(false); //可以跳转 但无任何展示
   }
   // 如果已登录 直接放行
 

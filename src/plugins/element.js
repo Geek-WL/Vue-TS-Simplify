@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import { Button, Tabs, TabPane, Form, FormItem, Input, Row, Col, Checkbox, Message, Container, Header, Aside, Main, Menu, MenuItem, MenuItemGroup, Submenu, Breadcrumb, BreadcrumbItem, Card, Select, Option, Table, TableColumn, Switch, Dialog, Pagination, Upload, Tooltip, Tag, Tree } from "element-ui";
+import { Button, Tabs, TabPane, Form, FormItem, Input, Row, Col, Checkbox, Message, Container, Header, Aside, Main, Menu, MenuItem, MenuItemGroup, Submenu, Breadcrumb, BreadcrumbItem, Card, Select, Option, Table, TableColumn, Switch, Dialog, Pagination, Upload, Tooltip, Tag, Tree, InputNumber } from "element-ui";
 
 Vue.prototype.$message = Message; // 添加全局ele-ui的message方法
+Vue.use(InputNumber);
 Vue.use(Tree);
 Vue.use(Tag);
 Vue.use(Tooltip);

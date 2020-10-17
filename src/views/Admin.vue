@@ -30,7 +30,7 @@
       <el-aside :width="isCollapse ? '64px' : '200px'">
         <!--        垂直侧边栏-->
         <el-menu
-          default-active="2"
+          default-active="/welcome"
           class="el-menu-vertical-demo"
           background-color="#000"
           text-color="#E1E1E1"
@@ -66,7 +66,6 @@
           </el-submenu>
         </el-menu>
         <el-menu
-          default-active="2"
           class="el-menu-vertical-demo"
           background-color="#000"
           text-color="#E1E1E1"
@@ -158,9 +157,18 @@
         path: 'echarts',
         icon: 'el-icon-pie-chart',
         children: [
-          {menuName: '柱状图', path: '/echartsbar', icon: 'el-icon-folder-remove', children: []},
-          {menuName: '折线图', path: '/echartsline', icon: 'el-icon-s-flag', children: []},
-          {menuName: '地图', path: '/echartsmap', icon: 'el-icon-s-release', children: []}]
+          {menuName: '柱状图', path: '/echartsbar', icon: 'el-icon-s-data', children: []},
+          {menuName: '折线图', path: '/echartsline', icon: 'el-icon-finished', children: []},
+          {menuName: '地图', path: '/echartsmap', icon: 'el-icon-map-location', children: []}]
+      },
+      {
+        menuName: '设置',
+        path: 'settings',
+        icon: 'el-icon-setting',
+        children: [
+          {menuName: '网站基础信息', path: '/settingweb', icon: '', children: []},
+          {menuName: '个人设置', path: '/settinguser', icon: '', children: []},
+          {menuName: '密码设置', path: '/settingpassword', icon: '', children: [], type: '个人设置'}]
       },
       // {
       //   menuName: '错误页面',
