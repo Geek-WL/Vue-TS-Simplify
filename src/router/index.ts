@@ -17,6 +17,7 @@ import ChinaMapSpace from "@/components/echarts/ChinaMapSpace.vue"
 import WebDataSettings from "@/components/settings/WebDataSettings.vue"
 import UserSettings from "@/components/settings/UserSettings.vue"
 import PasswordSetting from "@/components/settings/PasswordSetting.vue"
+import SourseCodePage from "@/components/SourseCodePage.vue"
 import Cookies from "js-cookie";
 
 Vue.use(VueRouter);
@@ -56,6 +57,7 @@ const routes: Array<RouteConfig> = [
       {path: '/settingweb', component: WebDataSettings},
       {path: '/settinguser', component: UserSettings},
       {path: '/settingpassword', component: PasswordSetting},
+      {path: '/sourse', component: SourseCodePage},
     ]
   },
 ];
@@ -69,7 +71,7 @@ const router = new VueRouter({
 // 路由控制
 router.beforeEach((to, form, next) => {
   // 如果是访问非权限页面 放行
-  if(to.path === '/register' || to.path === '/login' || to.path === '/error401' || to.path === '/error404' || to.path === '/error500' || to.path === '/echartsbar' || to.path === '/echartsline' || to.path === '/echartsmap' || to.path === '/settingweb' || to.path === '/settinguser' || to.path === '/settingpassword') {
+  if(to.path === '/register' || to.path === '/login' || to.path === '/error401' || to.path === '/error404' || to.path === '/error500' || to.path === '/echartsbar' || to.path === '/echartsline' || to.path === '/echartsmap' || to.path === '/settingweb' || to.path === '/settinguser' || to.path === '/settingpassword' || to.path === '/sourse') {
     return next();
   }
   // 判断登录状态，没有token就跳转至登录页

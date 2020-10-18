@@ -90,6 +90,12 @@
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
+          <el-menu-item index="/sourse" style="width: 200px;" @click="changeDefaultActivePath('/sourse')">
+            <template slot="title">
+              <i class="el-icon-shopping-cart-full"></i>
+              <span>获取源码</span>
+            </template>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>
@@ -344,6 +350,12 @@
 
     .el-aside {
       background: #000;
+      .el-menu-item {
+        a {
+          text-decoration: none;
+          color: #E1E1E1;
+        }
+      }
     }
   }
 </style>
