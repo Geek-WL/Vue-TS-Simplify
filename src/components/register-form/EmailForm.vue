@@ -118,6 +118,7 @@ export default class EmailForm extends Vue{
           }
         })
         .catch((err: any) => {
+          console.log(err);
           (this as any).$message.error(err.response.data.msg);
         })
       } else {
