@@ -20,6 +20,9 @@ import PasswordSetting from "@/components/settings/PasswordSetting.vue"
 import SourseCodePage from "@/components/SourseCodePage.vue"
 import Cookies from "js-cookie";
 
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
@@ -70,6 +73,7 @@ const router = new VueRouter({
 
 // 路由控制
 router.beforeEach((to, form, next) => {
+  NProgress.start();
   // 如果是访问非权限页面 放行
   if(to.path === '/register' || to.path === '/login' || to.path === '/error401' || to.path === '/error404' || to.path === '/error500' || to.path === '/echartsbar' || to.path === '/echartsline' || to.path === '/echartsmap' || to.path === '/settingweb' || to.path === '/settinguser' || to.path === '/settingpassword' || to.path === '/sourse') {
     return next();
@@ -90,6 +94,11 @@ router.beforeEach((to, form, next) => {
   // 如果已登录 直接放行
 
 });
+
+router.afterEach(() => {
+  NProgress.done();
+});
+
 // 遍历所有路由权限的路由地址，然后跟跳转的路由进行判断，true为有权限，false则无
 const isNext = (routerRights: any, path: string) => {
   if(routerRights.rightsPath === path) return true;
