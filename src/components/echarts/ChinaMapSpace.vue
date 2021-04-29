@@ -202,7 +202,7 @@ export default {
       myChart.setOption({
         //   里面就可复制官方文档里的内容
         title: {
-          text: "1982年各省GDP数据（虚拟）",
+          text: "2021年各省GDP数据（虚拟）",
           subtext: "虚拟数据",
           x: "right",
         },

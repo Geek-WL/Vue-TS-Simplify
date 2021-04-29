@@ -36,13 +36,16 @@
               <el-input v-model="searchData.key" placeholder="-关键字-"></el-input>
             </el-form-item>
             <el-form-item style="width: 180px">
-              <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
-              <el-button type="primary" @click="exportUsers" size="small">导出搜索结果</el-button>
+              <el-button type="primary" @click="onSubmit" size="small" v-permission="'users:query'">查询</el-button>
+              <el-button type="primary" @click="exportUsers" size="small" v-permission="'users:exportRes'">导出搜索结果</el-button>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="6">
-          <el-button type="primary" @click="showAddUserDialog" size="small">添加用户</el-button>
+          <el-button type="primary"
+                     @click="showAddUserDialog"
+                     size="small"
+                     v-permission="'users:addUser'">添加用户</el-button>
           <el-upload
             style="display: inline-block;margin-left: 10px;margin-right: 10px"
             class="upload-demo"
@@ -52,10 +55,10 @@
             :before-upload="beforeExcelUpload"
             accept=".xlsx">
 <!--            accept=".xls">-->
-            <el-button size="small" type="primary">导入用户</el-button>
+            <el-button size="small" type="primary" v-permission="'users:importUser'">导入用户</el-button>
           </el-upload>
           <a href="http://127.0.0.1:7001/api/v1/exportUser">
-            <el-button size="small" type="primary">导出所有用户</el-button>
+            <el-button size="small" type="primary" v-permission="'users:exportAllUser'">导出所有用户</el-button>
           </a>
         </el-col>
       </el-row>
@@ -64,6 +67,7 @@
         :data="tableData"
         border
         style="width: 100%"
+        v-loading
         :stripe="true">
         <!--        第一列作为索引列-->
         <el-table-column type="index">
@@ -93,17 +97,18 @@
               v-model="scope.row.userState"
               active-color="#13ce66"
               inactive-color="#ff4949"
-              @change="changeUserState(scope.row)">
+              @change="changeUserState(scope.row)"
+              v-permission="'users:status'">
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column
           label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" @click="showEditUserDialog(scope.row)" icon="el-icon-edit" size="small"></el-button>
-            <el-button type="danger" @click="destroyUser(scope.row.id)" icon="el-icon-delete" size="small"></el-button>
+            <el-button type="primary" @click="showEditUserDialog(scope.row)" icon="el-icon-edit" size="small" v-permission="'users:editUser'"></el-button>
+            <el-button type="danger" @click="destroyUser(scope.row.id)" icon="el-icon-delete" size="small" v-permission="'users:deleteUser'"></el-button>
             <el-tooltip :enterable="false" class="item" effect="dark" content="分配角色" placement="top">
-              <el-button type="warning" icon="el-icon-setting" size="small" @click="showAddRoleDialog(scope.row)"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="small" @click="showAddRoleDialog(scope.row)" v-permission="'users:assignRole'"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -208,7 +213,7 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="addRoleDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="addRole()">添加角色</el-button>
-        <el-button type="danger" @click="removeRole()">移除角色</el-button>
+        <el-button type="danger" @click="removeRole()" v-permission="'users:removeRole'">移除角色</el-button>
       </span>
     </el-dialog>
   </div>
@@ -226,7 +231,6 @@
 })
 export default class Users extends Vue{
     @Ref() readonly form?: ElForm;
-
     // 分配角色相关
     private addRoleDialogVisible = false;
     private currentUser: any = {};
@@ -294,11 +298,11 @@ export default class Users extends Vue{
       this.getUserList();
     }
     private handleSizeChange(currentSize: any) {
-      this.searchData.pageSize = currentSize;
+      (this.searchData as any).pageSize = currentSize;
       this.getUserList();
     }
     private handleCurrentChange(currentPage: any) {
-      this.searchData.currentPage = currentPage;
+      (this.searchData as any).currentPage = currentPage;
       this.getUserList();
     }
     private totalCount = 0;
@@ -306,7 +310,12 @@ export default class Users extends Vue{
       getUsers(this.searchData)
         .then((res: any) => {
           if(res.status === 200) {
-            this.tableData = res.data.data.users;
+            // console.log(res.data.data.users, '-----------------')
+            const curUserInfo: any = sessionStorage.getItem('userInfo')
+            const curUser = JSON.parse(curUserInfo)
+            this.tableData = res.data.data.users.filter((user: any) => {
+              return user.roles[0] ? user.roles[0].id >= curUser.roles[0].id : user
+            });
             this.totalCount = res.data.data.totalCount;
           }else {
             (this as any).$message.error(res.data.msg);

@@ -10,7 +10,7 @@
           <el-menu-item index="1"><i class="el-icon-bell"></i></el-menu-item>
           <el-menu-item index="2"><i class="el-icon-magic-stick"></i></el-menu-item>
           <el-menu-item index="3" @click="change_full_screen"><i class="el-icon-full-screen"></i></el-menu-item>
-          <el-submenu index="4" style="width: 161px">
+          <el-submenu index="4" style="width: 170px">
             <template slot="title">
               <div class="userInfo">
                 <p>{{userInfo.username || userInfo.email || userInfo.phone}}</p>
@@ -18,11 +18,11 @@
                 <i class="el-submenu__icon-arrow el-icon-arrow-down"></i>
               </div>
             </template>
-            <el-menu-item index="4-1">个人中心</el-menu-item>
-            <el-menu-item index="4-2">修改密码</el-menu-item>
+            <el-menu-item index="4-1" @click="toSettingUser">个人中心</el-menu-item>
+            <el-menu-item index="4-2" @click="toSettingPassword">修改密码</el-menu-item>
             <el-menu-item index="4-3" @click="logout">退出</el-menu-item>
           </el-submenu>
-          <el-menu-item index="5"><i class="el-icon-setting"></i></el-menu-item>
+          <el-menu-item index="5"><i class="el-icon-setting" @click="toSettingWeb"></i></el-menu-item>
         </el-menu>
       </div>
     </el-header>
@@ -115,6 +115,21 @@
   export default class Admin extends Vue {
     private fullscreen = false;
 
+    private toSettingUser() {
+      this.$router.push({
+        path: '/settinguser'
+      })
+    }
+    private toSettingPassword() {
+      this.$router.push({
+        path: '/settingpassword'
+      })
+    }
+    private toSettingWeb() {
+      this.$router.push({
+        path: '/settingweb'
+      })
+    }
     private change_full_screen() {
       //全屏切换函数
       let element: any = document.documentElement;
@@ -225,6 +240,7 @@
       Cookies.remove('token');
       sessionStorage.removeItem('activePath');
       sessionStorage.removeItem('userInfo');
+      sessionStorage.removeItem('roles');
       this.$router.push('/login');
     }
 

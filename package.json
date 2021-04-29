@@ -1,9 +1,10 @@
 {
   "name": "vue-ts-simplify",
   "version": "0.1.0",
+  "author": "jiangweilong",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve --open",
     "build": "vue-cli-service build"
   },
   "dependencies": {

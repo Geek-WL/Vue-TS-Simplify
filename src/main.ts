@@ -6,6 +6,7 @@ import './plugins/element.js'
 import 'normalize.css'
 import './assets/iconfont/iconfont.css'
 import 'animate.css'
+import './directives/permission.js'
 
 
 import vueParticleLine from 'vue-particle-line'

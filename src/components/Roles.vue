@@ -12,13 +12,13 @@
       <!--头部搜索区域-->
       <el-form :model="searchData" class="demo-form-inline">
         <el-form-item label="" style="width: 100%">
-          <el-input v-model="searchData.key" placeholder="关键字"></el-input>
+          <el-input v-model="searchData.key" placeholder="关键字" size="small"></el-input>
         </el-form-item>
         <el-form-item class="query_role">
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="showAddRoleDialog">添加</el-button>
+          <el-button type="primary" size="small" @click="showAddRoleDialog" v-permission="'roles:addRole'">添加</el-button>
         </el-form-item>
       </el-form>
       <!--中间表格区域-->
@@ -64,16 +64,17 @@
               v-model="scope.row.roleState"
               active-color="#13ce66"
               inactive-color="#ff4949"
-              @change="changeRoleState(scope.row)">
+              @change="changeRoleState(scope.row)"
+              v-permission="'roles:status'">
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" @click="showEditRoleDialog(scope.row)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" @click="destroyRole(scope.row.id)"></el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" @click="showEditRoleDialog(scope.row)" v-permission="'roles:editRole'"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="small" @click="destroyRole(scope.row.id)" v-permission="'roles:deleteRole'"></el-button>
             <el-tooltip class="item" effect="dark" content="分配权限" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" @click="showAddRightsDialog(scope.row)"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="small" @click="showAddRightsDialog(scope.row)" v-permission="'roles:assignRight'"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -112,7 +113,7 @@
 
     <!--编辑角色对话框-->
     <el-dialog
-      title="编辑用户"
+      title="编辑角色"
       :visible.sync="editRoleDialogVisible"
       width="30%">
       <el-form ref="form" :model="editData" :rules="addRoleRules" label-width="0px">
@@ -143,7 +144,7 @@
                :default-checked-keys="defaultCheckedKeys"></el-tree>
       <span slot="footer" class="dialog-footer">
     <el-button @click="addRightsDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="addRights">确 定</el-button>
+    <el-button type="primary" @click="addRights" v-permission="'roles:sureRight'">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -394,7 +395,12 @@
       getRoles(this.searchData)
         .then((response:any)=>{
           if(response.status === 200){
-            this.tableData = response.data.data.roles;
+            const roleInfo: any = sessionStorage.getItem('roles')
+            const role1 = JSON.parse(roleInfo)[0]
+            this.tableData = response.data.data.roles.filter((role2: any) => {
+              return role1.id <= role2.id
+            });
+            console.log(response.data.data.roles, '------------------')
             this.totalCount = response.data.data.totalCount;
           }else{
             (this as any).$message.error(response.data.msg);

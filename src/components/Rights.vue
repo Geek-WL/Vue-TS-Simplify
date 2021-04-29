@@ -26,7 +26,7 @@
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="showAddRightsDialog">添加</el-button>
+          <el-button type="primary" @click="showAddRightsDialog" v-permission="'rights:addRight'">添加</el-button>
         </el-form-item>
       </el-form>
       <!--中间表格区域-->
@@ -59,14 +59,15 @@
               v-model="scope.row.rightsState"
               active-color="#13ce66"
               inactive-color="#ff4949"
-              @change="changeRightsState(scope.row)">
+              @change="changeRightsState(scope.row)"
+              v-permission="'rights:status'">
             </el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" @click="showEditRightsDialog(scope.row)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" @click="destroyRights(scope.row.id)"></el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" @click="showEditRightsDialog(scope.row)" v-permission="'rights:editRight'"></el-button>
+            <el-button type="danger" size="small" icon="el-icon-delete" @click="destroyRights(scope.row.id)" v-permission="'rights:deleteRight'"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -128,7 +129,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
                 <el-button @click="rightsDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="handlerRights">确 定</el-button>
+                <el-button type="primary" @click="handlerRights" v-permission="'rights:checkRight'">确 定</el-button>
             </span>
     </el-dialog>
 
