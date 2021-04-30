@@ -10,13 +10,13 @@
       <el-row>
         <el-col :span="18">
           <el-form :inline="true" :model="searchData" class="demo-form-inline">
-            <el-form-item label="" style="width: 160px;">
-              <el-select v-model="searchData.role" placeholder="-所有角色-">
-                <el-option label="-所有角色-" value=""></el-option>
-                <el-option label="管理员" value="manager"></el-option>
-                <el-option label="普通用户" value="normal"></el-option>
-              </el-select>
-            </el-form-item>
+            <!--            <el-form-item label="" style="width: 160px;">-->
+            <!--              <el-select v-model="searchData.role" placeholder="-所有角色-">-->
+            <!--                <el-option label="-所有角色-" value=""></el-option>-->
+            <!--                <el-option label="管理员" value="manager"></el-option>-->
+            <!--                <el-option label="普通用户" value="normal"></el-option>-->
+            <!--              </el-select>-->
+            <!--            </el-form-item>-->
             <el-form-item label="" style="width: 160px;">
               <el-select v-model="searchData.origin" placeholder="-所有来源-">
                 <el-option label="-所有来源-" value=""></el-option>
@@ -37,7 +37,8 @@
             </el-form-item>
             <el-form-item style="width: 180px">
               <el-button type="primary" @click="onSubmit" size="small" v-permission="'users:query'">查询</el-button>
-              <el-button type="primary" @click="exportUsers" size="small" v-permission="'users:exportRes'">导出搜索结果</el-button>
+              <el-button type="primary" @click="exportUsers" size="small" v-permission="'users:exportRes'">导出搜索结果
+              </el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -45,7 +46,8 @@
           <el-button type="primary"
                      @click="showAddUserDialog"
                      size="small"
-                     v-permission="'users:addUser'">添加用户</el-button>
+                     v-permission="'users:addUser'">添加用户
+          </el-button>
           <el-upload
             style="display: inline-block;margin-left: 10px;margin-right: 10px"
             class="upload-demo"
@@ -54,7 +56,7 @@
             :on-success="handleExcelSuccess"
             :before-upload="beforeExcelUpload"
             accept=".xlsx">
-<!--            accept=".xls">-->
+            <!--            accept=".xls">-->
             <el-button size="small" type="primary" v-permission="'users:importUser'">导入用户</el-button>
           </el-upload>
           <a href="http://127.0.0.1:7001/api/v1/exportUser">
@@ -67,7 +69,6 @@
         :data="tableData"
         border
         style="width: 100%"
-        v-loading
         :stripe="true">
         <!--        第一列作为索引列-->
         <el-table-column type="index">
@@ -105,10 +106,13 @@
         <el-table-column
           label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" @click="showEditUserDialog(scope.row)" icon="el-icon-edit" size="small" v-permission="'users:editUser'"></el-button>
-            <el-button type="danger" @click="destroyUser(scope.row.id)" icon="el-icon-delete" size="small" v-permission="'users:deleteUser'"></el-button>
+            <el-button type="primary" @click="showEditUserDialog(scope.row)" icon="el-icon-edit" size="small"
+                       v-permission="'users:editUser'"></el-button>
+            <el-button type="danger" @click="destroyUser(scope.row.id)" icon="el-icon-delete" size="small"
+                       v-permission="'users:deleteUser'"></el-button>
             <el-tooltip :enterable="false" class="item" effect="dark" content="分配角色" placement="top">
-              <el-button type="warning" icon="el-icon-setting" size="small" @click="showAddRoleDialog(scope.row)" v-permission="'users:assignRole'"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="small" @click="showAddRoleDialog(scope.row)"
+                         v-permission="'users:assignRole'"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -125,7 +129,7 @@
       @current-change="handleCurrentChange">
     </el-pagination>
 
-<!--    添加用户对话框-->
+    <!--    添加用户对话框-->
     <el-dialog
       title="添加用户"
       :visible.sync="addUserDialogVisible"
@@ -150,7 +154,7 @@
   </span>
     </el-dialog>
 
-<!--    编辑用户对话框-->
+    <!--    编辑用户对话框-->
     <el-dialog
       title="编辑用户"
       :visible.sync="editUserDialogVisible"
@@ -159,10 +163,11 @@
         <el-form-item label="" prop="username" style="text-align: center">
           <el-upload
             class="avatar-uploader"
-            action="http://127.0.0.1:7001/api/v1/posts/"
+            action="http://127.0.0.1:7001/api/v1/posts"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload">
+            :before-upload="beforeAvatarUpload"
+            disabled>
             <img v-if="editData.avatarURL" :src="editData.baseURL + editData.avatarURL" class="avatar">
             <!--            <img v-if="editData.avatarURL" :src="editData.avatarURL" class="avatar">-->
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -224,50 +229,53 @@
   import {ElForm} from "element-ui/types/form";
   import {getUsers, createUsers, destroyUsers, updateUsers, getRoles, createUserRole, destroyUserRole} from "@/api";
   import XLSX from 'xlsx';
-  import { saveAs } from 'file-saver';
+  import {saveAs} from 'file-saver';
 
   @Component({
-  name: 'Users'
-})
-export default class Users extends Vue{
+    name: 'Users'
+  })
+  export default class Users extends Vue {
     @Ref() readonly form?: ElForm;
     // 分配角色相关
     private addRoleDialogVisible = false;
     private currentUser: any = {};
     private currentRoleId = '';
     private roles: any = [];
+
     private showAddRoleDialog(user: any) {
       this.addRoleDialogVisible = true;
       this.currentUser = user;
       getRoles({})
-      .then((res: any) => {
-        if(res.status === 200) {
-          this.roles = res.data.data.roles;
-          (this as any).$message.success('获取角色成功');
-        } else {
-          (this as any).$message.error('获取角色失败');
-        }
-      })
-      .catch(err => {
-        (this as any).$message.error(`获取角色失败-${err.response.data.msg}`);
-      })
+        .then((res: any) => {
+          if (res.status === 200) {
+            this.roles = res.data.data.roles;
+            (this as any).$message.success('获取角色成功');
+          } else {
+            (this as any).$message.error('获取角色失败');
+          }
+        })
+        .catch(err => {
+          (this as any).$message.error(`获取角色失败-${err.response.data.msg}`);
+        })
     }
+
     private addRole() {
       this.addRoleDialogVisible = false;
       const obj = {userId: this.currentUser.id, roleId: this.currentRoleId};
       createUserRole(obj)
-      .then((res: any) => {
-        if(res.status === 200) {
-          this.getUserList();
-          (this as any).$message.success('分配角色成功');
-        } else {
+        .then((res: any) => {
+          if (res.status === 200) {
+            this.getUserList();
+            (this as any).$message.success('分配角色成功');
+          } else {
+            (this as any).$message.error('分配角色失败');
+          }
+        })
+        .catch(err => {
           (this as any).$message.error('分配角色失败');
-        }
-      })
-      .catch(err => {
-        (this as any).$message.error('分配角色失败');
-      })
+        })
     }
+
     private getCurrentRoleName(row: any, column: any, cellValue: any, index: any) {
       const roles = row.roles;
       const names: any[] = [];
@@ -276,40 +284,45 @@ export default class Users extends Vue{
       });
       return names.join(' | ');
     }
+
     private removeRole() {
       this.addRoleDialogVisible = false;
       const obj = {roleId: this.currentRoleId};
       destroyUserRole(this.currentUser.id, obj)
-      .then((res: any) => {
-        if(res.status === 200) {
-          this.getUserList();
-          (this as any).$message.success('移除角色成功');
-        } else {
+        .then((res: any) => {
+          if (res.status === 200) {
+            this.getUserList();
+            (this as any).$message.success('移除角色成功');
+          } else {
+            (this as any).$message.error('移除角色失败');
+          }
+        })
+        .catch(err => {
           (this as any).$message.error('移除角色失败');
-        }
-      })
-      .catch(err => {
-        (this as any).$message.error('移除角色失败');
-      })
+        })
     }
 
 
-    private created():void {
+    private created(): void {
       this.getUserList();
     }
+
     private handleSizeChange(currentSize: any) {
       (this.searchData as any).pageSize = currentSize;
       this.getUserList();
     }
+
     private handleCurrentChange(currentPage: any) {
       (this.searchData as any).currentPage = currentPage;
       this.getUserList();
     }
+
     private totalCount = 0;
+
     private getUserList() {
       getUsers(this.searchData)
         .then((res: any) => {
-          if(res.status === 200) {
+          if (res.status === 200) {
             // console.log(res.data.data.users, '-----------------')
             const curUserInfo: any = sessionStorage.getItem('userInfo')
             const curUser = JSON.parse(curUserInfo)
@@ -317,7 +330,7 @@ export default class Users extends Vue{
               return user.roles[0] ? user.roles[0].id >= curUser.roles[0].id : user
             });
             this.totalCount = res.data.data.totalCount;
-          }else {
+          } else {
             (this as any).$message.error(res.data.msg);
           }
         })
@@ -329,7 +342,7 @@ export default class Users extends Vue{
     // 上传成功的回调
     private handleExcelSuccess(res: any, file: any) {
       // console.log(res);
-      if(res.code === 200) {
+      if (res.code === 200) {
         // (this.tableData as any).push(...res.data); // 红线无伤大雅
         this.getUserList();
         (this as any).$message.success('导入用户成功');
@@ -337,6 +350,7 @@ export default class Users extends Vue{
         (this as any).$message.success('导入用户失败');
       }
     }
+
     //上传之前的回调
     private beforeExcelUpload(file: any) {
       // xlsx 文件类型: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
@@ -357,28 +371,29 @@ export default class Users extends Vue{
 
     private changeUserState(user: any) {
       updateUsers(user.id, user)
-      .then((res: any) => {
-        if(res.status === 200) {
-          (this as any).$message.success('更新用户状态成功');
-        } else {
+        .then((res: any) => {
+          if (res.status === 200) {
+            (this as any).$message.success('更新用户状态成功');
+          } else {
+            user.userState = !user.userState;
+            (this as any).$message.error('更新用户状态失败');
+          }
+        })
+        .catch(err => {
           user.userState = !user.userState;
           (this as any).$message.error('更新用户状态失败');
-        }
-      })
-      .catch(err => {
-        user.userState = !user.userState;
-        (this as any).$message.error('更新用户状态失败');
-      })
+        })
     }
 
     // 上传成功的回调
     private handleAvatarSuccess(res: any, file: any) {
       // this.imageUrl = URL.createObjectURL(file.raw);
       // console.log(res);
-      if(res.code === 200) {
+      if (res.code === 200) {
         this.editData.avatarURL = res.data;
       }
     }
+
     //上传之前的回调
     private beforeAvatarUpload(file: any) {
       const isJPG = file.type === 'image/jpeg';
@@ -392,230 +407,243 @@ export default class Users extends Vue{
       return isJPG && isLt2M;
     }
 
-  private editUserRules = {
-    username: [
-      { validator: this.validateUsername, trigger: 'blur' }
-    ],
-    phone: [
-      { validator: this.validatePhone, trigger: 'blur' }
-    ],
-    email: [
-      { validator: this.validateEmail, trigger: 'blur' }
-    ],
-    password: [
-      { validator: this.validatePassword2, trigger: 'blur' }
-    ],
-  };
-  private editData = {
-    username: '',
-    email: '',
-    phone: '',
-    password: '',
-    id: '',
-    avatarURL: '',
-  };
-  private editUserDialogVisible = false;
-  private editUser() {
+    private editUserRules = {
+      username: [
+        {validator: this.validateUsername, trigger: 'blur'}
+      ],
+      phone: [
+        {validator: this.validatePhone, trigger: 'blur'}
+      ],
+      email: [
+        {validator: this.validateEmail, trigger: 'blur'}
+      ],
+      password: [
+        {validator: this.validatePassword2, trigger: 'blur'}
+      ],
+    };
+    private editData = {
+      username: '',
+      email: '',
+      phone: '',
+      password: '',
+      id: '',
+      avatarURL: '',
+    };
+    private editUserDialogVisible = false;
+
+    private editUser() {
       this.editUserDialogVisible = false;
       this.form!.validate((flag) => {
-      if(flag) {
-        updateUsers(this.editData.id, this.editData)
+        if (flag) {
+          updateUsers(this.editData.id, this.editData)
+            .then((res: any) => {
+              if (res.status === 200) {
+                const idx = this.tableData.findIndex((obj: any) => {
+                  return obj.id === this.editData.id;
+                });
+                this.$set(this.tableData, idx, this.editData);
+                (this as any).$message.success('更新用户成功');
+              } else {
+                (this as any).$message.error(res.data.msg);
+              }
+            })
+            .catch((err) => {
+              (this as any).$message.error(err.response.data.msg);
+            })
+        } else {
+          (this as any).$message.error('请完善用户信息');
+        }
+      })
+    };
+
+    private showEditUserDialog(user: any) {
+      this.editUserDialogVisible = true;
+      this.editData = Object.assign(this.editData, user);
+    }
+
+
+    private destroyUser(id: string) {
+      destroyUsers(id)
         .then((res: any) => {
-          if(res.status === 200) {
+          if (res.status === 200) {
             const idx = this.tableData.findIndex((obj: any) => {
-              return obj.id === this.editData.id;
+              return obj.id === id;
             });
-            this.$set(this.tableData, idx, this.editData);
-            (this as any).$message.success('更新用户成功');
+            this.tableData.splice(idx, 1);
+            (this as any).$message.success(res.data.msg);
           } else {
             (this as any).$message.error(res.data.msg);
           }
         })
-        .catch((err) => {
+        .catch(err => {
           (this as any).$message.error(err.response.data.msg);
         })
-      }else{
-        (this as any).$message.error('请完善用户信息');
-      }
-    })
-  };
-  private showEditUserDialog(user: any) {
-    this.editUserDialogVisible = true;
-    this.editData = Object.assign(this.editData, user);
-  }
+    }
 
+    private addUserDialogVisible = false;
+    private userData = {
+      username: '',
+      email: '',
+      phone: '',
+      password: '',
+    };
+    private addUserRules = {
+      username: [
+        {validator: this.validateUsername, trigger: 'blur'}
+      ],
+      phone: [
+        {validator: this.validatePhone, trigger: 'blur'}
+      ],
+      email: [
+        {validator: this.validateEmail, trigger: 'blur'}
+      ],
+      password: [
+        {validator: this.validatePassword, trigger: 'blur'}
+      ],
+    };
 
-  private destroyUser(id: string) {
-    destroyUsers(id)
-    .then((res: any) => {
-      if(res.status === 200) {
-        const idx = this.tableData.findIndex((obj: any) => {
-          return obj.id === id;
-        });
-        this.tableData.splice(idx, 1);
-        (this as any).$message.success(res.data.msg);
+    private validatePhone(rule: any, value: string, callback: any) {
+      // console.log(rule, value, callback)
+      const reg = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-7|9])|(?:5[0-3|5-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1|8|9]))\d{8}$/;
+      if (value && !reg.test(value)) {
+        callback(new Error('手机号格式不正确'));
       } else {
-        (this as any).$message.error(res.data.msg);
+        callback();
       }
-    })
-    .catch(err => {
-      (this as any).$message.error(err.response.data.msg);
-    })
-  }
+    };
 
-  private addUserDialogVisible = false;
-  private userData = {
-    username: '',
-    email: '',
-    phone: '',
-    password: '',
-  };
-  private addUserRules = {
-    username: [
-      { validator: this.validateUsername, trigger: 'blur' }
-    ],
-    phone: [
-      { validator: this.validatePhone, trigger: 'blur' }
-    ],
-    email: [
-      { validator: this.validateEmail, trigger: 'blur' }
-    ],
-    password: [
-      { validator: this.validatePassword, trigger: 'blur' }
-    ],
-  };
-  private validatePhone(rule: any, value: string, callback: any) {
-    // console.log(rule, value, callback)
-    const reg = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-7|9])|(?:5[0-3|5-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1|8|9]))\d{8}$/;
-    if(value && !reg.test(value)) {
-      callback(new Error('手机号格式不正确'));
-    }else{
-      callback();
-    }
-  };
-  private validateEmail(rule: any, value: string, callback: any) {
-    // console.log(rule, value, callback)
-    const reg = /^([A-Za-z0-9_\-\.])+\@(163.com|qq.com)$/;
-    if(value && !reg.test(value)) {
-      callback(new Error('邮箱格式不正确'));
-    }else{
-      callback();
-    }
-  };
-  private validateUsername(rule: any, value: string, callback: any) {
-    // console.log(rule, value, callback)
-    const reg = /^[a-zA-Z][a-zA-Z0-9_]{8,20}$/;
-    if(!value) {
-      callback(new Error('请填写用户名'));
-    }else if(value.length < 6) {
-      callback(new Error('用户名至少6位'));
-    }else if(!reg.test(value)) {
-      callback(new Error('用户名只能是字母数字组合'));
-    }else{
-      callback()
-    }
-  };
-  private validatePassword(rule: any, value: string, callback: any) {
-    // console.log(rule, value, callback)
-    const reg = /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{8,20}$/;
-    if(!value) {
-      callback(new Error('务必填写密码'));
-    }else if(value.length < 6) {
-      callback(new Error('密码至少8位'));
-    }else if(!reg.test(value)) {
-      callback(new Error('密码必须包含字母数字和特殊字符'));
-    }else{
-      callback()
-    }
-  };
-  private validatePassword2(rule: any, value: string, callback: any) {
-    // console.log(rule, value, callback)
-    const reg = /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{8,20}$/;
-    if(value) {
-      if(value.length < 6) {
+    private validateEmail(rule: any, value: string, callback: any) {
+      // console.log(rule, value, callback)
+      const reg = /^([A-Za-z0-9_\-\.])+\@(163.com|qq.com)$/;
+      if (value && !reg.test(value)) {
+        callback(new Error('邮箱格式不正确'));
+      } else {
+        callback();
+      }
+    };
+
+    private validateUsername(rule: any, value: string, callback: any) {
+      // console.log(rule, value, callback)
+      const reg = /^[a-zA-Z][a-zA-Z0-9_]{8,20}$/;
+      if (!value) {
+        callback(new Error('请填写用户名'));
+      } else if (value.length < 6) {
+        callback(new Error('用户名至少6位'));
+      } else if (!reg.test(value)) {
+        callback(new Error('用户名只能是字母数字组合'));
+      } else {
+        callback()
+      }
+    };
+
+    private validatePassword(rule: any, value: string, callback: any) {
+      // console.log(rule, value, callback)
+      const reg = /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{8,20}$/;
+      if (!value) {
+        callback(new Error('务必填写密码'));
+      } else if (value.length < 6) {
         callback(new Error('密码至少8位'));
-      }else if(!reg.test(value)) {
+      } else if (!reg.test(value)) {
         callback(new Error('密码必须包含字母数字和特殊字符'));
+      } else {
+        callback()
       }
-    }else{
-      callback()
-    }
-  };
-  private tableData = [];
+    };
 
-  private searchData = {
-    role: '',
-    origin: '',
-    type: '',
-    key: '',
-    currentPage: 1,
-    pageSize: 5,
-  };
-  private resetDefaultActivePath() {
-    sessionStorage.removeItem('activePath');
-  }
-  private onSubmit() {
-    this.getUserList();
-  }
-  private exportUsers() {
-    const user = this.tableData.length ? this.tableData[0] : null;
-    if(user) {
-      const columnTitles = Object.keys(user);
-      const data: any[] = [];
-      data.push(columnTitles);
-      this.tableData.forEach(user => {
-        const temp: any = [];
-        columnTitles.forEach(key => {
-          temp.push(user[key]);
+    private validatePassword2(rule: any, value: string, callback: any) {
+      // console.log(rule, value, callback)
+      const reg = /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{8,20}$/;
+      if (value) {
+        if (value.length < 6) {
+          callback(new Error('密码至少8位'));
+        } else if (!reg.test(value)) {
+          callback(new Error('密码必须包含字母数字和特殊字符'));
+        }
+      } else {
+        callback()
+      }
+    };
+
+    private tableData = [];
+
+    private searchData = {
+      role: '',
+      origin: '',
+      type: '',
+      key: '',
+      currentPage: 1,
+      pageSize: 5,
+    };
+
+    private resetDefaultActivePath() {
+      sessionStorage.removeItem('activePath');
+    }
+
+    private onSubmit() {
+      this.getUserList();
+    }
+
+    private exportUsers() {
+      const user = this.tableData.length ? this.tableData[0] : null;
+      if (user) {
+        const columnTitles = Object.keys(user);
+        const data: any[] = [];
+        data.push(columnTitles);
+        this.tableData.forEach(user => {
+          const temp: any = [];
+          columnTitles.forEach(key => {
+            temp.push(user[key]);
+          });
+          data.push(temp);
         });
-        data.push(temp);
-      });
-      // 1.根据表格的内容生成表格中的数据
-      const sheet = XLSX.utils.aoa_to_sheet(data);
-      // 2.创建一个新的表格
-      const workbook = XLSX.utils.book_new();
-      // 3.把数据添加到表格中，并给这个表格起一个名称
-      XLSX.utils.book_append_sheet(workbook, sheet, 'user');
-      // 4.将生成的表格保存到本地
-      // XLSX.writeFile(workbook, 'users.xls'); // 有兼容问题 可以配合file-saver.js解决兼容问题
-      const wopts: any = {bookType: 'xlsx', bookSST: false, type: 'array'};
-      const wbout = XLSX.write(workbook,wopts);
-      saveAs(new Blob([wbout],{type: 'application/octet-stream'}), 'users.xlsx')
+        // 1.根据表格的内容生成表格中的数据
+        const sheet = XLSX.utils.aoa_to_sheet(data);
+        // 2.创建一个新的表格
+        const workbook = XLSX.utils.book_new();
+        // 3.把数据添加到表格中，并给这个表格起一个名称
+        XLSX.utils.book_append_sheet(workbook, sheet, 'user');
+        // 4.将生成的表格保存到本地
+        // XLSX.writeFile(workbook, 'users.xls'); // 有兼容问题 可以配合file-saver.js解决兼容问题
+        const wopts: any = {bookType: 'xlsx', bookSST: false, type: 'array'};
+        const wbout = XLSX.write(workbook, wopts);
+        saveAs(new Blob([wbout], {type: 'application/octet-stream'}), 'users.xlsx')
+      }
+    }
+
+
+    private showAddUserDialog() {
+      this.addUserDialogVisible = true;
+      this.form?.resetFields();
+    }
+
+    private createUser() {
+      this.addUserDialogVisible = false;
+      this.form!.validate((flag) => {
+        if (flag) {
+          createUsers(this.userData)
+            .then((res: any) => {
+              if (res.status === 200) {
+                const user = res.data.data;
+                // (this.tableData as any).push(user);
+                this.getUserList();
+                (this as any).$message.success('添加用户成功')
+              } else {
+                (this as any).$message.error(res.data.msg)
+              }
+            })
+            .catch(err => {
+              (this as any).$message.error(err.response.data.msg)
+            })
+        } else {
+          (this as any).$message.error('请完善用户信息');
+        }
+      })
+    }
+
+    private importUsers() {
+
     }
   }
-
-
-  private showAddUserDialog() {
-    this.addUserDialogVisible = true;
-    this.form?.resetFields();
-  }
-  private createUser() {
-    this.addUserDialogVisible = false;
-    this.form!.validate((flag) => {
-      if(flag) {
-        createUsers(this.userData)
-          .then((res: any) => {
-            if(res.status === 200) {
-              const user = res.data.data;
-              // (this.tableData as any).push(user);
-              this.getUserList();
-              (this as any).$message.success('添加用户成功')
-            }else{
-              (this as any).$message.error(res.data.msg)
-            }
-          })
-          .catch(err => {
-            (this as any).$message.error(err.response.data.msg)
-          })
-      }else{
-        (this as any).$message.error('请完善用户信息');
-      }
-    })
-  }
-  private importUsers() {
-
-  }
-}
 </script>
 
 <style lang="scss" scoped>
@@ -623,12 +651,15 @@ export default class Users extends Vue{
   .users {
     min-width: 1225px;
   }
+
   .el-breadcrumb {
     padding-bottom: 20px;
   }
-  .el-pagination{
+
+  .el-pagination {
     padding-top: 20px;
   }
+
   .avatar-uploader {
     display: inline-block;
     border: 1px dashed #d9d9d9;
@@ -637,9 +668,11 @@ export default class Users extends Vue{
     position: relative;
     overflow: hidden;
   }
+
   .avatar-uploader:hover {
     border-color: #409EFF;
   }
+
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
@@ -648,6 +681,7 @@ export default class Users extends Vue{
     line-height: 178px;
     text-align: center;
   }
+
   .avatar {
     width: 178px;
     height: 178px;

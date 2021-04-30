@@ -12,7 +12,8 @@ export default new Vuex.Store({
     frontEndPermission: ['users:query', 'users:exportRes', 'users:addUser', 'users:importUser', 'users:exportAllUser'],
     testPermission: [
       ['users:query', 'users:exportRes']
-    ]
+    ],
+    avatarUrl: ''
   },
   getters: {
     getRoles(state) {
@@ -29,16 +30,25 @@ export default new Vuex.Store({
       } else if(JSON.parse(data)[0].id === 6) {
         return state.testPermission
       }
+    },
+    getAvatar(state) {
+      return state.avatarUrl
     }
   },
   mutations: {
     setRoles(state, data) {
       state.roles = data
+    },
+    setAvatar(state, data) {
+      state.avatarUrl = data
     }
   },
   actions: {
     commitSetRoles({commit}, payload) {
       commit('setRoles', payload)
+    },
+    commitSetAvatar({ commit }, payload) {
+      commit('setAvatar', payload)
     }
   },
   modules: {}

@@ -4,9 +4,21 @@
       <div class="header-left" @click="toggleCollapse">
         <p>Dlmwnr's Design</p>
       </div>
+      <div class="header-center">
+        <img src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80" alt="" class="funny" @click="toggleCollapse">
+        <img src="../assets/zcool.gif" alt="" class="funny" @click="toggleCollapse">
+        <img src="../assets/0.gif" alt="" class="funny" @click="toggleCollapse">
+        <img src="../assets/1.jpg" alt="" class="funny" @click="toggleCollapse">
+        <img src="../assets/sun.png" alt="" class="funny s" @click="toggleCollapse">
+        <img src="../assets/earth.png" alt="" class="funny s" @click="toggleCollapse">
+        <img src="../assets/nepture.png" alt="" class="funny s" @click="toggleCollapse">
+        <img src="../assets/b612.png" alt="" class="funny s" @click="toggleCollapse">
+        <img src="../assets/saturn.png" alt="" class="funny s" @click="toggleCollapse">
+        <img src="../assets/uranus.png" alt="" class="funny s" @click="toggleCollapse">
+      </div>
       <div class="header-right">
-        <el-menu class="el-menu-demo" mode="horizontal" active-text-color="#ffd04b" background-color="#545c64"
-                 text-color="#fff">
+        <el-menu class="el-menu-demo" mode="horizontal" active-text-color="#00BFFF" background-color="#f4f4f4"
+                 text-color="#5A5E66">
           <el-menu-item index="1"><i class="el-icon-bell"></i></el-menu-item>
           <el-menu-item index="2"><i class="el-icon-magic-stick"></i></el-menu-item>
           <el-menu-item index="3" @click="change_full_screen"><i class="el-icon-full-screen"></i></el-menu-item>
@@ -33,7 +45,7 @@
           default-active="/welcome"
           class="el-menu-vertical-demo"
           background-color="#000"
-          text-color="#E1E1E1"
+          text-color="#fff"
           active-text-color="deepskyblue"
           :collapse="isCollapse"
           :collapse-transition="false"
@@ -68,7 +80,7 @@
         <el-menu
           class="el-menu-vertical-demo"
           background-color="#000"
-          text-color="#E1E1E1"
+          text-color="#fff"
           active-text-color="deepskyblue"
           :collapse="isCollapse"
           :collapse-transition="false"
@@ -99,7 +111,9 @@
         </el-menu>
       </el-aside>
       <el-main>
-        <router-view></router-view>
+        <transition name="el-zoom-in-bottom" mode="out-in">
+          <router-view></router-view>
+        </transition>
       </el-main>
     </el-container>
   </el-container>
@@ -110,22 +124,25 @@
   import Cookies from "js-cookie";
 
   @Component({
-    name: 'Admin'
+    name: 'Admin',
   })
   export default class Admin extends Vue {
     private fullscreen = false;
 
     private toSettingUser() {
+      this.changeDefaultActivePath('/settinguser')
       this.$router.push({
         path: '/settinguser'
       })
     }
     private toSettingPassword() {
+      this.changeDefaultActivePath('/settingpassword')
       this.$router.push({
         path: '/settingpassword'
       })
     }
     private toSettingWeb() {
+      this.changeDefaultActivePath('/settingweb')
       this.$router.push({
         path: '/settingweb'
       })
@@ -310,7 +327,7 @@
       overflow: hidden;
       padding-right: 20px;
       padding-left: 0;
-      background: #545c64;
+      background: #f6f6f6;
 
       .header-left {
         width: 200px;
@@ -329,16 +346,32 @@
           color: #fff;
         }
       }
-
+      .header-center {
+        .funny {
+          width: 50px;
+          height: 50px;
+          margin-right: 30px;
+          border-radius: 5px;
+          cursor: pointer;
+          &.s {
+            &:hover {
+              transform: scale(1.5);
+              transition: all .6s ease-in-out;
+            }
+          }
+        }
+      }
       .header-right {
         display: flex;
         justify-content: space-between;
         align-items: center;
-
+        font-weight: bold;
+        border-bottom: 1px solid #ccc;
+        min-width: 446px;
         i {
-          color: #fff;
+          font-weight: bold;
+          color: #6B6E75;
         }
-
         .userInfo {
           display: flex;
           align-items: center;

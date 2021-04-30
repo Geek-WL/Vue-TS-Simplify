@@ -5,7 +5,7 @@ export const sendEmailCaptcha = (data: {}) => network.get('/emailCaptcha', data)
 export const sendPhoneCaptcha = (data: {}) => network.get('/smsCaptcha', data);
 export const loginUser = (data: {}) => network.post('/login', data);
 //重置密码
-
+export const updatePwd = (data: {}) => network.post('/updatePwd', data);
 //用户管理相关
 export const getUsers = (data: any) => network.get('/api/v1/users', data);
 export const createUsers = (data: {}) => network.post('/api/v1/users', data);
