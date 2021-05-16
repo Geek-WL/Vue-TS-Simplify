@@ -127,8 +127,50 @@
     name: 'Admin',
   })
   export default class Admin extends Vue {
-    private fullscreen = false;
-
+    private changeDefaultActivePath(path: string) {
+      this.defaultActivePath = path;
+      sessionStorage.setItem('activePath', path)
+    }
+    private userInfo: any = {};
+    created(): void {
+      const path = sessionStorage.getItem('activePath');
+      this.defaultActivePath = path ? path : '';
+      const userInfo = sessionStorage.getItem('userInfo');
+      if (userInfo) {
+        this.userInfo = JSON.parse(userInfo);
+      }
+      // console.log(this.userInfo.rightsTree);
+      // 解决菜单同步展开问题
+      let i = 1;
+      this.userInfo.rightsTree[0].children.forEach((item: any) => {
+        item.rightsPath = `${i++}`
+      });
+    }
+    private getIcon(rightsName: string) {
+      switch (rightsName) {
+        case '用户管理':
+          return 'el-icon-tickets';
+          break;
+        case '权限管理':
+          return 'el-icon-collection';
+          break;
+        case '用户列表':
+          return 'el-icon-user';
+          break;
+        case '用户管理':
+          return 'el-icon-setting';
+          break;
+        case '角色列表':
+          return 'el-icon-view';
+          break;
+        case '权限列表':
+          return 'el-icon-unlock';
+          break;
+        default:
+          '';
+      }
+    }
+    private fullscreen: boolean = false;
     private toSettingUser() {
       this.changeDefaultActivePath('/settinguser')
       this.$router.push({
@@ -174,8 +216,6 @@
       }
       this.fullscreen = !this.fullscreen; //判断全屏状态
     }
-
-
     private defaultActivePath = '';
     private menus = [
       {
@@ -241,7 +281,6 @@
       //   ]
       // },
     ];
-
     private get currentMenus() {
       for (let i = 0; i < this.userInfo.rightsTree.length; i++) {
         const rights = this.userInfo.rightsTree[i];
@@ -250,9 +289,7 @@
         }
       }
     }
-
     private isCollapse = false;
-
     private logout() {
       Cookies.remove('token');
       sessionStorage.removeItem('activePath');
@@ -260,56 +297,8 @@
       sessionStorage.removeItem('roles');
       this.$router.push('/login');
     }
-
     private toggleCollapse() {
       this.isCollapse = !this.isCollapse;
-    }
-
-    private changeDefaultActivePath(path: string) {
-      this.defaultActivePath = path;
-      sessionStorage.setItem('activePath', path)
-    }
-
-    private userInfo: any = {};
-
-    created(): void {
-      const path = sessionStorage.getItem('activePath');
-      this.defaultActivePath = path ? path : '';
-      const userInfo = sessionStorage.getItem('userInfo');
-      if (userInfo) {
-        this.userInfo = JSON.parse(userInfo);
-      }
-      // console.log(this.userInfo.rightsTree);
-      // 解决菜单同步展开问题
-      let i = 1;
-      this.userInfo.rightsTree[0].children.forEach((item: any) => {
-        item.rightsPath = `${i++}`
-      });
-    }
-
-    private getIcon(rightsName: string) {
-      switch (rightsName) {
-        case '用户管理':
-          return 'el-icon-tickets';
-          break;
-        case '权限管理':
-          return 'el-icon-collection';
-          break;
-        case '用户列表':
-          return 'el-icon-user';
-          break;
-        case '用户管理':
-          return 'el-icon-setting';
-          break;
-        case '角色列表':
-          return 'el-icon-view';
-          break;
-        case '权限列表':
-          return 'el-icon-unlock';
-          break;
-        default:
-          '';
-      }
     }
   }
 </script>
